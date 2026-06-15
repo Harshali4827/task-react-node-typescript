@@ -1,0 +1,185 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.list-page {
+  min-height: 100vh;
+  padding: 30px;
+
+  background: #f5f7fb;
+}
+
+.list-container {
+  max-width: 1400px;
+  margin: auto;
+}
+
+.list-header {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  margin-bottom: 25px;
+}
+
+.page-title {
+  font-size: 32px;
+
+  font-weight: 700;
+}
+
+.page-subtitle {
+  color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  );
+
+  margin-top: 5px;
+}
+
+.add-btn {
+  border: none;
+
+  padding: 14px 22px;
+
+  border-radius: 12px;
+
+  background: white;
+
+  color: #4f46e5;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px
+    rgba(0,0,0,.15);
+}
+
+.table-wrapper {
+  background: white;
+
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 4px 25px rgba(0,0,0,.08);
+}
+
+.student-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  min-width: 1200px;
+}
+
+.student-table thead {
+  background: #4f46e5;
+
+  color: white;
+}
+
+.student-table th {
+  padding: 18px;
+
+  text-align: left;
+
+  font-weight: 600;
+}
+
+
+.student-table td {
+  padding: 18px;
+
+  border-bottom:
+    1px solid #f1f5f9;
+}
+
+.student-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.student-table tbody tr {
+  transition: 0.3s;
+}
+
+.student-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.gender {
+  padding: 6px 12px;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+.male {
+  background: #dbeafe;
+
+  color: #1d4ed8;
+}
+
+.female {
+  background: #fce7f3;
+
+  color: #be185d;
+}
+
+.action-buttons {
+  display: flex;
+
+  gap: 10px;
+}
+
+.edit-btn {
+  background: #3b82f6;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 8px 16px;
+
+  cursor: pointer;
+}
+.edit-btn:hover {
+   background: #3177e7;
+}
+
+.delete-btn {
+  background: #ef4444;
+
+  color: white;
+
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 8px 16px;
+
+  cursor: pointer;
+}
+.delete-btn:hover {
+  background: #dc2626;
+}

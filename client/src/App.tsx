@@ -8,10 +8,21 @@ import LoginForm from "./components/LoginForm";
 import StudentForm from "./components/StudentForm";
 
 import StudentList from "./components/StudentList";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
-    <Routes>
+    <>
+        <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        theme="colored"
+      />
+       <Routes>
       <Route
         path="/"
         element={<LoginForm />}
@@ -32,6 +43,7 @@ function App() {
         element={<StudentForm />}
       />
     </Routes>
+    </>
   );
 }
 

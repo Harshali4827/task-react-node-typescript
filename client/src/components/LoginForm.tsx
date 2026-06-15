@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import { Link, useNavigate } from "react-router-dom";
 import API from "../services/api";
+import { toast } from "react-toastify";
 const LoginForm = () => {
   const navigate = useNavigate();
 
@@ -11,20 +12,38 @@ const LoginForm = () => {
   const [password, setPassword] =
     useState("");
 
-  const handleSubmit = async (
+const handleSubmit = async (
   e: React.FormEvent
 ) => {
   e.preventDefault();
 
+  if (!email.trim()) {
+    toast.warning(
+      "Email is required"
+    );
+
+    return;
+  }
+
   if (!email.includes("@")) {
-    alert("Invalid Email");
+    toast.error(
+      "Please enter a valid email address"
+    );
+
+    return;
+  }
+
+  if (!password.trim()) {
+    toast.warning(
+      "Password is required"
+    );
 
     return;
   }
 
   if (password.length < 6) {
-    alert(
-      "Password must be minimum 6 characters"
+    toast.error(
+      "Password must be at least 6 characters"
     );
 
     return;
@@ -38,65 +57,108 @@ const LoginForm = () => {
       });
 
     if (response.data.success) {
-      alert("Login Successful");
+      // toast.success(
+      //   "Login Successful"
+      // );
 
-      navigate("/students");
+      // setTimeout(() => {
+        navigate("/students");
+      // }, 1000);
     }
   } catch (error: any) {
-    alert(
-      error.response.data.message
+    toast.error(
+      error?.response?.data
+        ?.message ||
+        "Login Failed"
     );
   }
 };
-
   return (
-    <div
-      style={{
-        width: "400px",
-        margin: "50px auto",
-      }}
-    >
-      <h1>Login</h1>
 
-      <form onSubmit={handleSubmit}>
+   <div className="page-container">
+  <div
+    className="card"
+    style={{
+      maxWidth: "450px"
+    }}
+  >
+    <div className="form-header">
+      <h1>🎓 Student Portal</h1>
+
+      <p>
+        Sign in to continue
+      </p>
+    </div>
+
+    <form onSubmit={handleSubmit}>
+
+      <div className="form-group">
+        <label>Email</label>
+
         <input
           type="email"
-          placeholder="Email"
+          className="form-control"
           value={email}
           onChange={(e) =>
-            setEmail(e.target.value)
+            setEmail(
+              e.target.value
+            )
           }
+          placeholder="Enter Email"
         />
+      </div>
 
-        <br />
-        <br />
+      <div
+        className="form-group"
+        style={{
+          marginTop: "20px"
+        }}
+      >
+        <label>Password</label>
 
         <input
           type="password"
-          placeholder="Password"
+          className="form-control"
           value={password}
           onChange={(e) =>
-            setPassword(e.target.value)
+            setPassword(
+              e.target.value
+            )
           }
+          placeholder="Enter Password"
         />
+      </div>
 
-        <br />
-        <br />
+      <button
+        type="submit"
+        className="primary-btn"
+      >
+        Login
+      </button>
 
-        <button type="submit">
-          Login
-        </button>
-      </form>
+    </form>
 
-      <br />
+    <div
+      style={{
+        marginTop: "20px",
+        textAlign: "center"
+      }}
+    >
+      Not Registered?
 
-      <p>
-        Not Registered?{" "}
-        <Link to="/register">
-          Register Here
-        </Link>
-      </p>
+      <Link
+        to="/register"
+        style={{
+          marginLeft: "5px"
+        }}
+      >
+        Register Here
+      </Link>
     </div>
+
+  </div>
+</div>
+
   );
 };
 

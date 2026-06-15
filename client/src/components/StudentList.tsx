@@ -10,7 +10,9 @@ import {
 import API from "../services/api";
 
 import { decryptData } from "../utils/crypto";
-
+import './StudentList.css';
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 const StudentList = () => {
   const navigate = useNavigate();
 
@@ -61,79 +63,86 @@ const StudentList = () => {
 
     setStudents(decryptedStudents);
   };
-
+  
   const handleDelete = async (
-    id: string
-  ) => {
+  id: string
+) => {
+  const result = await Swal.fire({
+    title: "Delete Student?",
+    text: "This action cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, Delete",
+    cancelButtonText: "Cancel",
+    reverseButtons: true,
+  });
+
+  if (!result.isConfirmed) {
+    return;
+  }
+
+  try {
     await API.delete(
       `/student/${id}`
     );
 
-    fetchStudents();
-  };
+    toast.success(
+      "Student deleted successfully"
+    );
 
+    fetchStudents();
+  } catch (error) {
+    toast.error(
+      "Failed to delete student"
+    );
+  }
+};
   useEffect(() => {
     fetchStudents();
   }, []);
 
   return (
-    <div
-      style={{
-        width: "95%",
-        margin: "20px auto",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          justifyContent:
-            "space-between",
-          marginBottom: "20px",
-        }}
-      >
-        <h1>Student List</h1>
+  
+<div className="list-page">
 
-       <button
-  onClick={() =>
-    navigate("/register")
-  }
-  style={{
-    padding: "8px 16px",
-    height: "40px",
-    backgroundColor: "#1976d2",
-    color: "white",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    fontSize: "14px",
-    fontWeight: "500",
-  }}
->
-  Register Student
-</button>
+  <div className="list-container">
+
+    <div className="list-header">
+
+      <div>
+        <h1 className="page-title">
+          🎓 Student Management
+        </h1>
+
+        <p className="page-subtitle">
+          Manage all registered students
+        </p>
       </div>
 
-      <table
-        border={1}
-        cellPadding={10}
-        width="100%"
+      <button
+        className="add-btn"
+        onClick={() =>
+          navigate("/register")
+        }
       >
+        + Add Student
+      </button>
+
+    </div>
+
+    <div className="table-wrapper">
+
+      <table className="student-table">
+
         <thead>
           <tr>
             <th>Name</th>
-
             <th>Email</th>
-
             <th>Phone</th>
-
             <th>DOB</th>
-
             <th>Gender</th>
-
             <th>Address</th>
-
             <th>Course</th>
-
             <th>Actions</th>
           </tr>
         </thead>
@@ -141,70 +150,72 @@ const StudentList = () => {
         <tbody>
           {students.map((student) => (
             <tr key={student._id}>
-              <td>
-                {student.fullName}
-              </td>
+
+              <td>{student.fullName}</td>
+
+              <td>{student.email}</td>
+
+              <td>{student.phoneNumber}</td>
+
+              <td>{student.dateOfBirth}</td>
 
               <td>
-                {student.email}
-              </td>
-
-              <td>
-                {
-                  student.phoneNumber
-                }
-              </td>
-
-              <td>
-                {
-                  student.dateOfBirth
-                }
-              </td>
-
-              <td>
-                {student.gender}
-              </td>
-
-              <td>
-                {student.address}
-              </td>
-
-              <td>
-                {
-                  student.courseEnrolled
-                }
-              </td>
-
-              <td>
-                <button
-                  onClick={() =>
-                    navigate(
-                      `/edit/${student._id}`
-                    )
+                <span
+                  className={
+                    student.gender === "Male"
+                      ? "gender male"
+                      : "gender female"
                   }
                 >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() =>
-                    handleDelete(
-                      student._id
-                    )
-                  }
-                  style={{
-                    marginLeft:
-                      "10px",
-                  }}
-                >
-                  Delete
-                </button>
+                  {student.gender}
+                </span>
               </td>
+
+              <td>{student.address}</td>
+
+              <td>
+                {student.courseEnrolled}
+              </td>
+
+              <td>
+                <div className="action-buttons">
+
+                  <button
+                    className="edit-btn"
+                    onClick={() =>
+                      navigate(
+                        `/edit/${student._id}`
+                      )
+                    }
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="delete-btn"
+                    onClick={() =>
+                      handleDelete(
+                        student._id
+                      )
+                    }
+                  >
+                    Delete
+                  </button>
+
+                </div>
+              </td>
+
             </tr>
           ))}
         </tbody>
+
       </table>
+
     </div>
+
+  </div>
+
+</div>
   );
 };
 

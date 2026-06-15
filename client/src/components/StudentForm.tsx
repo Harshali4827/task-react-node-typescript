@@ -2,20 +2,18 @@ import {
   useEffect,
   useState,
 } from "react";
-
 import {
   useNavigate,
   useParams,
 } from "react-router-dom";
-
 import API from "../services/api";
-
+import "../styles/common.css";
 import {
   encryptData,
   decryptData,
 } from "../utils/crypto";
-
-const StudentForm = () => {
+import { toast } from "react-toastify";
+  const StudentForm = () => {
   const navigate = useNavigate();
 
   const { id } = useParams();
@@ -102,55 +100,131 @@ const StudentForm = () => {
     }
   }, [id]);
 
-  const handleSubmit = async (
-    e: React.FormEvent
-  ) => {
-    e.preventDefault();
 
-    const encryptedData = {
-      fullName: encryptData(
-        student.fullName
-      ),
+const handleSubmit = async (
+  e: React.FormEvent
+) => {
+  e.preventDefault();
+  
+  if (!student.fullName.trim()) {
+  toast.error("Full Name is required");
+  return;
+}
 
-      email: encryptData(
-        student.email
-      ),
+if (!student.email.trim()) {
+  toast.error("Email is required");
+  return;
+}
 
-      phoneNumber:
-        encryptData(
-          student.phoneNumber
-        ),
+const emailRegex =
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      dateOfBirth:
-        encryptData(
-          student.dateOfBirth
-        ),
+if (
+  !emailRegex.test(student.email)
+) {
+  toast.error(
+    "Please enter a valid email address"
+  );
+  return;
+}
 
-      gender: encryptData(
-        student.gender
-      ),
+if (!student.phoneNumber.trim()) {
+  toast.error(
+    "Mobile Number is required"
+  );
+  return;
+}
 
-      address: encryptData(
-        student.address
-      ),
+const phoneRegex = /^[0-9]{10}$/;
 
-      courseEnrolled:
-        encryptData(
-          student.courseEnrolled
-        ),
+if (
+  !phoneRegex.test(
+    student.phoneNumber
+  )
+) {
+  toast.error(
+    "Mobile Number must be exactly 10 digits"
+  );
+  return;
+}
 
-      password: encryptData(
-        student.password
-      ),
-    };
+if (!student.dateOfBirth) {
+  toast.error(
+    "Date of Birth is required"
+  );
+  return;
+}
 
+if (!student.gender) {
+  toast.error(
+    "Please select Gender"
+  );
+  return;
+}
+
+if (!student.courseEnrolled.trim()) {
+  toast.error(
+    "Course is required"
+  );
+  return;
+}
+
+if (!student.address.trim()) {
+  toast.error(
+    "Address is required"
+  );
+  return;
+}
+
+if (!student.password.trim()) {
+  toast.error(
+    "Password is required"
+  );
+  return;
+}
+
+if (student.password.length < 6) {
+  toast.error(
+    "Password must be at least 6 characters"
+  );
+  return;
+}
+
+  const encryptedData = {
+    fullName: encryptData(
+      student.fullName
+    ),
+    email: encryptData(
+      student.email
+    ),
+    phoneNumber: encryptData(
+      student.phoneNumber
+    ),
+    dateOfBirth: encryptData(
+      student.dateOfBirth
+    ),
+    gender: encryptData(
+      student.gender
+    ),
+    address: encryptData(
+      student.address
+    ),
+    courseEnrolled: encryptData(
+      student.courseEnrolled
+    ),
+    password: encryptData(
+      student.password
+    ),
+  };
+
+  try {
     if (id) {
       await API.put(
         `/student/${id}`,
         encryptedData
       );
 
-      alert(
+      toast.success(
         "Student Updated Successfully"
       );
     } else {
@@ -159,160 +233,179 @@ const StudentForm = () => {
         encryptedData
       );
 
-      alert(
+      toast.success(
         "Student Registered Successfully"
       );
     }
 
-    navigate("/students");
-  };
-
+    setTimeout(() => {
+      navigate("/students");
+    }, 1000);
+  } catch (error: any) {
+    toast.error(
+      error?.response?.data
+        ?.message ||
+        "Something went wrong"
+    );
+  }
+};
   return (
-    <div
-      style={{
-        width: "600px",
-        margin: "30px auto",
-        border:
-          "1px solid #ccc",
-        padding: "25px",
-        borderRadius: "10px",
-      }}
-    >
-      <h1>
-        {id
-          ? "Edit Student"
-          : "Register Student"}
-      </h1>
+    <div className="page-container">
+  <div
+    className="card"
+    style={{ maxWidth: "1000px" }}
+  >
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Full Name
-        </label>
+        <div className="form-header">
+   <h1>
+    {id
+      ? "✏️ Update Student"
+      : "🎓 Register Student"}
+  </h1>
 
-        <input
-          type="text"
-          name="fullName"
-          value={student.fullName}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+  <p>
+    {id
+      ? "Update student information"
+      : "Create a new student account"}
+  </p>
+</div>
 
-        <label>Email</label>
+        <form onSubmit={handleSubmit}>
+          <div className="form-grid">
 
-        <input
-          type="email"
-          name="email"
-          value={student.email}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+            <div className="form-group">
+              <label>Full Name</label>
 
-        <label>
-          Phone Number
-        </label>
+              <input
+                type="text"
+                name="fullName"
+                value={student.fullName}
+                onChange={handleChange}
+                className="form-control"
+                placeholder="Enter Full Name"
+              />
+            </div>
 
-        <input
-          type="text"
-          name="phoneNumber"
-          value={
-            student.phoneNumber
-          }
-          onChange={handleChange}
-          style={inputStyle}
-        />
+            <div className="form-group">
+              <label>Email</label>
 
-        <label>
-          Date Of Birth
-        </label>
+              <input
+                type="email"
+                name="email"
+                value={student.email}
+                onChange={handleChange}
+                className="form-control"
+                placeholder="Enter Email"
+              />
+            </div>
 
-        <input
-          type="date"
-          name="dateOfBirth"
-          value={
-            student.dateOfBirth
-          }
-          onChange={handleChange}
-          style={inputStyle}
-        />
+            <div className="form-group">
+              <label>Phone Number</label>
 
-        <label>Gender</label>
+              <input
+                type="text"
+                name="phoneNumber"
+                value={student.phoneNumber}
+                onChange={handleChange}
+                className="form-control"
+                placeholder="Enter Phone Number"
+              />
+            </div>
 
-        <select
-          name="gender"
-          value={student.gender}
-          onChange={handleChange}
-          style={inputStyle}
-        >
-          <option value="">
-            Select Gender
-          </option>
+            <div className="form-group">
+              <label>Date Of Birth</label>
 
-          <option value="Male">
-            Male
-          </option>
+              <input
+                type="date"
+                name="dateOfBirth"
+                value={student.dateOfBirth}
+                onChange={handleChange}
+                className="form-control"
+              />
+            </div>
 
-          <option value="Female">
-            Female
-          </option>
-        </select>
+            <div className="form-group">
+              <label>Gender</label>
 
-        <label>Address</label>
+              <select
+                name="gender"
+                value={student.gender}
+                onChange={handleChange}
+                className="form-control"
+              >
+                <option value="">
+                  Select Gender
+                </option>
 
-        <textarea
-          name="address"
-          value={student.address}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+                <option value="Male">
+                  Male
+                </option>
 
-        <label>
-          Course Enrolled
-        </label>
+                <option value="Female">
+                  Female
+                </option>
 
-        <input
-          type="text"
-          name="courseEnrolled"
-          value={
-            student.courseEnrolled
-          }
-          onChange={handleChange}
-          style={inputStyle}
-        />
+                <option value="Other">
+                  Other
+                </option>
+              </select>
+            </div>
 
-        <label>Password</label>
+            <div className="form-group">
+              <label>Course</label>
 
-        <input
-          type="password"
-          name="password"
-          value={student.password}
-          onChange={handleChange}
-          style={inputStyle}
-        />
+              <input
+                type="text"
+                name="courseEnrolled"
+                value={
+                  student.courseEnrolled
+                }
+                onChange={handleChange}
+                className="form-control"
+                placeholder="Enter Course"
+              />
+            </div>
 
-        <button
-          type="submit"
-          style={{
-            padding:
-              "10px 20px",
-          }}
-        >
-          {id
-            ? "Update Student"
-            : "Register Student"}
-        </button>
-      </form>
+            <div className="form-group full-width">
+              <label>Address</label>
+
+              <textarea
+                name="address"
+                value={student.address}
+                onChange={handleChange}
+                className="form-control textarea"
+                placeholder="Enter Address"
+              />
+            </div>
+
+            <div className="form-group full-width">
+              <label>Password</label>
+
+              <input
+                type="password"
+                name="password"
+                value={student.password}
+                onChange={handleChange}
+                className="form-control"
+                placeholder="Enter Password"
+              />
+            </div>
+
+          </div>
+
+       <button
+  type="submit"
+  className="primary-btn"
+>
+  {id
+    ? "Update Student"
+    : "Register Student"}
+</button>
+        </form>
+      </div>
     </div>
   );
 };
 
-const inputStyle = {
-  width: "100%",
-
-  padding: "10px",
-
-  marginBottom: "15px",
-
-  marginTop: "5px",
-};
 
 export default StudentForm;

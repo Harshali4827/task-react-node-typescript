@@ -6,32 +6,104 @@ import {
   frontendDecrypt
 } from "../utils/crypto";
 
-
-
 // CREATE STUDENT
+
 export const registerStudent = async (
   req: Request,
   res: Response
 ) => {
   try {
+    const encryptedEmail =
+      req.body.email;
+
+    const originalEmail =
+      frontendDecrypt(
+        encryptedEmail
+      );
+
+    const students =
+      await Student.find();
+
+    const existingStudent =
+      students.find(
+        (student: any) => {
+          const dbEmail =
+            frontendDecrypt(
+              backendDecrypt(
+                student.email
+              )
+            );
+
+          return (
+            dbEmail
+              .toLowerCase()
+              .trim() ===
+            originalEmail
+              .toLowerCase()
+              .trim()
+          );
+        }
+      );
+
+    if (existingStudent) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Email already exists",
+      });
+    }
+
     const student = new Student({
-      fullName: backendEncrypt(req.body.fullName),
-      email: backendEncrypt(req.body.email),
-      phoneNumber: backendEncrypt(req.body.phoneNumber),
-      dateOfBirth: backendEncrypt(req.body.dateOfBirth),
-      gender: backendEncrypt(req.body.gender),
-      address: backendEncrypt(req.body.address),
-      courseEnrolled: backendEncrypt(req.body.courseEnrolled),
-      password: backendEncrypt(req.body.password),
+      fullName:
+        backendEncrypt(
+          req.body.fullName
+        ),
+
+      email: backendEncrypt(
+        req.body.email
+      ),
+
+      phoneNumber:
+        backendEncrypt(
+          req.body.phoneNumber
+        ),
+
+      dateOfBirth:
+        backendEncrypt(
+          req.body.dateOfBirth
+        ),
+
+      gender:
+        backendEncrypt(
+          req.body.gender
+        ),
+
+      address:
+        backendEncrypt(
+          req.body.address
+        ),
+
+      courseEnrolled:
+        backendEncrypt(
+          req.body.courseEnrolled
+        ),
+
+      password:
+        backendEncrypt(
+          req.body.password
+        ),
     });
 
     await student.save();
 
     res.status(201).json({
       success: true,
-      message: "Student Registered Successfully",
+      message:
+        "Student Registered Successfully",
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: "Server Error",
@@ -143,44 +215,122 @@ export const getStudents = async (
   }
 };
 
-
-
 // UPDATE STUDENT
+
 export const updateStudent = async (
   req: Request,
   res: Response
 ) => {
   try {
-    const updatedStudent = await Student.findByIdAndUpdate(
-      req.params.id,
-      {
-        fullName: backendEncrypt(req.body.fullName),
-        email: backendEncrypt(req.body.email),
-        phoneNumber: backendEncrypt(req.body.phoneNumber),
-        dateOfBirth: backendEncrypt(req.body.dateOfBirth),
-        gender: backendEncrypt(req.body.gender),
-        address: backendEncrypt(req.body.address),
-        courseEnrolled: backendEncrypt(req.body.courseEnrolled),
-        password: backendEncrypt(req.body.password),
-      },
-      {
-        new: true,
-      }
-    );
+    const encryptedEmail =
+      req.body.email;
+
+    const originalEmail =
+      frontendDecrypt(
+        encryptedEmail
+      );
+
+    const students =
+      await Student.find({
+        _id: {
+          $ne: req.params.id,
+        },
+      });
+
+    const existingStudent =
+      students.find(
+        (student: any) => {
+          const dbEmail =
+            frontendDecrypt(
+              backendDecrypt(
+                student.email
+              )
+            );
+
+          return (
+            dbEmail
+              .toLowerCase()
+              .trim() ===
+            originalEmail
+              .toLowerCase()
+              .trim()
+          );
+        }
+      );
+
+    if (existingStudent) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Email already exists",
+      });
+    }
+
+    const updatedStudent =
+      await Student.findByIdAndUpdate(
+        req.params.id,
+        {
+          fullName:
+            backendEncrypt(
+              req.body.fullName
+            ),
+
+          email:
+            backendEncrypt(
+              req.body.email
+            ),
+
+          phoneNumber:
+            backendEncrypt(
+              req.body.phoneNumber
+            ),
+
+          dateOfBirth:
+            backendEncrypt(
+              req.body.dateOfBirth
+            ),
+
+          gender:
+            backendEncrypt(
+              req.body.gender
+            ),
+
+          address:
+            backendEncrypt(
+              req.body.address
+            ),
+
+          courseEnrolled:
+            backendEncrypt(
+              req.body.courseEnrolled
+            ),
+
+          password:
+            backendEncrypt(
+              req.body.password
+            ),
+        },
+        {
+          new: true,
+        }
+      );
 
     res.status(200).json({
       success: true,
+      message:
+        "Student Updated Successfully",
       updatedStudent,
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
-      message: "Update Failed",
+      message:
+        "Update Failed",
     });
   }
 };
-
-
 
 // DELETE STUDENT
 export const deleteStudent = async (
