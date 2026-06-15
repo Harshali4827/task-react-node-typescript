@@ -111,12 +111,8 @@ const StudentList = () => {
 
       <div>
         <h1 className="page-title">
-          🎓 Student Management
+          Student Management
         </h1>
-
-        <p className="page-subtitle">
-          Manage all registered students
-        </p>
       </div>
 
       <button

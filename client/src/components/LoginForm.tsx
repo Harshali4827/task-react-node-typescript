@@ -12,6 +12,7 @@ const LoginForm = () => {
   const [password, setPassword] =
     useState("");
 
+
 const handleSubmit = async (
   e: React.FormEvent
 ) => {
@@ -83,11 +84,7 @@ const handleSubmit = async (
     }}
   >
     <div className="form-header">
-      <h1>🎓 Student Portal</h1>
-
-      <p>
-        Sign in to continue
-      </p>
+      <h1>Login</h1>
     </div>
 
     <form onSubmit={handleSubmit}>

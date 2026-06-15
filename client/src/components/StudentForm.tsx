@@ -259,15 +259,10 @@ if (student.password.length < 6) {
         <div className="form-header">
    <h1>
     {id
-      ? "✏️ Update Student"
-      : "🎓 Register Student"}
+      ? " Update Student"
+      : " Register Student"}
   </h1>
 
-  <p>
-    {id
-      ? "Update student information"
-      : "Create a new student account"}
-  </p>
 </div>
 
         <form onSubmit={handleSubmit}>
