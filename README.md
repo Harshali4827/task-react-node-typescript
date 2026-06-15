@@ -143,7 +143,7 @@ Original Data
 ## 1. Clone Repository
 
 ```bash
-git clone <your-github-repository-link>
+git clone https://github.com/Harshali4827/task-react-node-typescript.git
 ```
 
 ---
